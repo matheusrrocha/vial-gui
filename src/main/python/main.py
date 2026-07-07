@@ -11,8 +11,7 @@ import traceback
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import pyqtSignal
 
-from fbs_runtime.application_context import cached_property
-from fbs_runtime.application_context.PyQt5 import ApplicationContext
+from application_context import ApplicationContext, cached_property
 
 import sys
 

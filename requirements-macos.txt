@@ -1,0 +1,17 @@
+# Native Apple Silicon (arm64) build of the macOS app.
+#
+# The main requirements.txt is pinned to fbs 0.9.0, which only supports
+# Python 3.5/3.6 — Python versions that only ship x86_64 macOS builds and
+# therefore need Rosetta 2, which Apple is removing after macOS 27. This
+# file replaces that stack for macOS: modern Python + PyQt5 wheels with
+# arm64 support, frozen with plain PyInstaller (see vial-mac.spec).
+#
+# Note: the `keyboard` package is intentionally absent — macro recording is
+# only implemented on Linux and Windows (see editor/macro_recorder.py).
+certifi
+hidapi==0.15.0
+PyInstaller==6.21.0
+PyQt5==5.15.11
+PyQt5-Qt5==5.15.19
+PyQt5-sip==12.18.0
+simpleeval==1.0.7

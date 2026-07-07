@@ -15,6 +15,10 @@ unzip vial-mac.zip
 rm vial-mac.zip
 mv vial-mac.dmg Vial-v$VER.dmg
 
+unzip vial-mac-intel.zip
+rm vial-mac-intel.zip
+mv vial-mac-intel.dmg Vial-v$VER-intel.dmg
+
 unzip vial-win-installer.zip
 rm vial-win-installer.zip
 mv VialSetup.exe Vial-v$VER-setup.exe

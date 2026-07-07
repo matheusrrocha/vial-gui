@@ -17,7 +17,41 @@ jobs:
         name: vial-linux
         path: util/linux-builder/output/Vial-x86_64.AppImage
 
+  # Native Apple Silicon build. macOS runners have been arm64 since macos-14;
+  # this produces an arm64 Vial.app that keeps working once Rosetta 2 is
+  # removed (announced for after macOS 27).
   build-mac:
+    runs-on: macos-15
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+
+    - name: Setup venv
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements-macos.txt
+
+    - name: Build
+      run: |
+        source venv/bin/activate
+        pyinstaller --noconfirm vial-mac.spec
+        lipo -archs "dist/Vial.app/Contents/MacOS/Vial" | grep -q arm64
+        hdiutil create -volname Vial -srcfolder "dist/Vial.app" -ov -format UDZO vial-mac.dmg
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: vial-mac
+        path: vial-mac.dmg
+
+  # Legacy x86_64 build for Intel Macs (runs under Rosetta 2 on Apple
+  # Silicon). Kept while Intel machines remain in use; fbs 0.9.0 requires
+  # this exact Python 3.6 stack.
+  build-mac-intel:
     runs-on: macos-15
     env:
       PYTHON_VERSION: 3.6.8
@@ -46,12 +80,12 @@ jobs:
       run: |
         source venv/bin/activate
         fbs freeze
-        hdiutil create -volname Vial -srcfolder "target/Vial.app" -ov -format UDZO vial-mac.dmg
+        hdiutil create -volname Vial -srcfolder "target/Vial.app" -ov -format UDZO vial-mac-intel.dmg
 
     - uses: actions/upload-artifact@v4
       with:
-        name: vial-mac
-        path: vial-mac.dmg
+        name: vial-mac-intel
+        path: vial-mac-intel.dmg
 
   build-win:
     runs-on: windows-2025
